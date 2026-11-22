@@ -8,37 +8,53 @@
 <meta name="description" content="魔法少女ノ魔女裁判 同人互动开端：创造角色 / 角色图鉴 / 世界观介绍。非官方、免费、无收益。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23120000'/%3E%3Cpath d='M16 5l3 8h8l-6.5 5 2.5 8-7-5-7 5 2.5-8L5 13h8z' fill='%23ff2a3a'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/title.css">
 </head>
 <body>
 <div id="bgfill"></div>
 
 <!-- 标题页：1270×720 的固定画布，等比缩放，与视频逐像素对齐 -->
 <section id="title" class="view-title">
+  <!-- 竖屏 / 窄屏时的标题 -->
+  <header class="mtitle"><small>魔法少女ノ魔女裁判 · 开端</small><h1>魔法少女的<em>魔女审判</em></h1><p>MAGICAL GIRL WITCH TRIALS</p></header>
   <div id="stage-wrap">
     <div id="stage">
-      <video id="bgv" src="assets/opening.mp4" poster="assets/poster.jpg" autoplay muted loop playsinline preload="auto"></video>
+      <!-- 视差分层：背景(最远) → 光晕 → 巨型描边字 → 粒子 → 扫光 → 暗角 → HUD → 界面(最近) -->
+      <div class="l l-bg">
+        <video id="bgv" src="assets/opening.mp4" poster="assets/poster.jpg" autoplay muted loop playsinline preload="auto"></video>
+        <i class="pt pt-l"></i><i class="pt pt-r"></i><i class="pt pt-r2"></i><i class="pt pt-x"></i>
+      </div>
+      <div class="l l-glow"></div>
+      <div class="l l-words" aria-hidden="true"><b class="w1">TRIAL</b><b class="w2">WITCH</b></div>
+      <canvas id="fx" width="1270" height="720" aria-hidden="true"></canvas>
+      <div class="l l-streak"></div>
+      <div class="vig"></div>
       <div class="scan"></div>
+      <div class="l l-hud" aria-hidden="true"><i class="c1"></i><i class="c2"></i><i class="c3"></i><i class="c4"></i><span class="no">13 SINNERS · 658—670</span></div>
 
-      <nav id="menu" class="menu" aria-label="主菜单">
-        <a class="mi" href="#/create" data-k="create"><i></i><span>创造角色</span></a>
-        <a class="mi" href="#/roster" data-k="roster"><i></i><span>角色图鉴</span></a>
-        <a class="mi" href="#/world" data-k="world"><i></i><span>世界观介绍</span></a>
-      </nav>
-
-      <nav id="side" class="side" aria-label="功能">
-        <button class="sp" data-act="load"><span>读档</span></button>
-        <button class="sp" data-act="music" id="musicBtn"><span>音乐</span></button>
-        <a class="sp" href="https://manosaba.com/" target="_blank" rel="noopener"><span>官方站</span></a>
-        <a class="sp" href="https://bgm.tv/subject/488392" target="_blank" rel="noopener"><span>Bangumi</span></a>
-        <button class="sp" data-act="about"><span>说明</span></button>
-      </nav>
-      <button class="exit" data-act="about"><span>关于本站</span></button>
+      <div class="l l-ui">
+        <div class="ttl">
+          <div class="kick">魔法少女ノ魔女裁判 · 开端</div>
+          <h1 aria-label="魔法少女的魔女审判">
+            <span class="t1"><span style="--i:0">魔</span><span style="--i:1">法</span><span style="--i:2">少</span><span style="--i:3">女</span><span style="--i:4">的</span></span>
+            <span class="t2"><span class="r" style="--i:5">魔</span><span class="r" style="--i:6">女</span><span style="--i:7">审</span><span style="--i:8">判</span></span>
+          </h1>
+          <div class="en">MAGICAL GIRL WITCH TRIALS</div>
+          <i class="bar"></i>
+        </div>
+        <nav id="menu" class="menu" aria-label="主菜单">
+          <a class="mi" style="--i:0" href="#/create"><em>01</em><span>创造角色</span></a>
+          <a class="mi" style="--i:1" href="#/roster"><em>02</em><span>角色图鉴</span></a>
+          <a class="mi" style="--i:2" href="#/world"><em>03</em><span>世界观介绍</span></a>
+          <button class="mi" style="--i:3" data-act="music" id="musicBtn" type="button"><em>04</em><span>音乐</span><b class="eq"><s></s><s></s><s></s></b></button>
+        </nav>
+      </div>
     </div>
   </div>
   <!-- 竖屏 / 窄屏时的大按钮菜单 -->
   <nav id="mmenu" class="mmenu" aria-label="主菜单（手机）">
     <a href="#/create">创造角色</a><a href="#/roster">角色图鉴</a><a href="#/world">世界观介绍</a>
-    <div class="mrow"><button data-act="load">读档</button><button data-act="music" class="mmusic">音乐</button><button data-act="about">说明</button></div>
+    <button data-act="music" class="mmusic" type="button">音乐</button>
   </nav>
   <div class="fan">非官方同人网页 · 免费 · 无收益 · 与 Acacia / Re,AER 无关</div>
 </section>
@@ -67,5 +83,6 @@
 <script src="js/data-world.js"></script>
 <script src="js/data-talents.js"></script>
 <script src="js/app.js"></script>
+<script src="js/fx.js"></script>
 </body>
 </html>

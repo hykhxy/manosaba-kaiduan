@@ -107,7 +107,6 @@
     musicOn = on; bgv.muted = !on;
     if (on) { var p = bgv.play(); if (p && p.catch) p.catch(function () {}); }
     $$('[data-act=music]').forEach(function (b) { b.classList.toggle('on', on); });
-    var m = $('#musicBtn'); if (m) m.firstChild.textContent = on ? '音乐 ♪' : '音乐';
   }
   function aboutModal() {
     openModal(h('div', { class: 'about' }, [
