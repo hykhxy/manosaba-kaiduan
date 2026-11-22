@@ -95,11 +95,41 @@
 
   /* ───────── 标题页：等比缩放 / 音乐 ───────── */
   var bgv = $('#bgv');
+  /* 三种显示：
+     d  = 电脑 / 横向窗口：1270×720 画布等比缩放
+     p  = 竖屏：背景铺满、人物按脸定位、标题在上按钮在下
+     rot= 竖屏设备上点“横屏”：整页旋转 90°，按 d 的布局显示（沙盒 iframe 无法全屏 / 锁定方向时的兜底） */
+  var rotated = false, titleSec = document.getElementById('title');
   function fit() {
-    var vw = window.innerWidth, vh = window.innerHeight;
-    var portrait = (vw / vh <= 1) || vw <= 760;
-    var s = portrait ? Math.min(vw / 1270, 1) : Math.min(vw / 1270, vh / 720);
-    document.documentElement.style.setProperty('--s', s.toFixed(4));
+    var vw = window.innerWidth, vh = window.innerHeight, root = document.documentElement;
+    var portrait = (vw / vh <= 1.1) || vw < 600;
+    if (!portrait) rotated = false;
+    var mode = portrait && !rotated ? 'p' : 'd';
+    var w = rotated ? vh : vw, hh = rotated ? vw : vh;
+    var s = Math.min(w / 1270, hh / 720);
+    root.style.setProperty('--s', s.toFixed(4));
+    root.style.setProperty('--vw', vw + 'px'); root.style.setProperty('--vh', vh + 'px');
+    if (titleSec) {
+      titleSec.setAttribute('data-mode', mode);
+      titleSec.classList.toggle('rot', rotated);
+      titleSec.classList.toggle('land', !portrait);
+      titleSec.classList.toggle('touch', !!(window.matchMedia && matchMedia('(pointer:coarse)').matches));
+      var lb = titleSec.querySelector('.rotb span'); if (lb) lb.textContent = (rotated || !portrait) ? '竖屏' : '横屏';
+    }
+    var stg = document.getElementById('stage'); if (stg) { stg.scrollLeft = 0; stg.scrollTop = 0; }
+    try { window.dispatchEvent(new Event('stagefit')); } catch (e) {}
+  }
+  function exitFs() { try { if (document.fullscreenElement) document.exitFullscreen(); if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch (e) {} }
+  function toggleRot() {
+    var vw = window.innerWidth, vh = window.innerHeight, portrait = (vw / vh <= 1.1) || vw < 600;
+    if (!portrait) { exitFs(); return; }                    // 已是横向（真横屏）：按钮变成“竖屏”，退出全屏
+    if (rotated) { rotated = false; fit(); return; }
+    // 先尝试真·横屏（普通网页里：全屏 + 锁定方向）；沙盒 iframe 不允许，就用旋转兜底
+    var de = document.documentElement;
+    if (document.fullscreenEnabled && de.requestFullscreen && screen.orientation && screen.orientation.lock) {
+      de.requestFullscreen().then(function () { return screen.orientation.lock('landscape'); })
+        .then(function () { setTimeout(fit, 250); }, function () { exitFs(); rotated = true; fit(); });
+    } else { rotated = true; fit(); }
   }
   window.addEventListener('resize', fit); fit();
   var musicOn = false;
@@ -127,9 +157,13 @@
     if (b) {
       var a = b.getAttribute('data-act');
       if (a === 'music') setMusic(!musicOn);
+      else if (a === 'rot') toggleRot();
       else if (a === 'about') aboutModal();
-      else if (a === 'load') { if (loadSaved()) { location.hash = '#/create'; toast('已读取存档'); } else toast('还没有存档，先去创造一个角色吧'); }
+      else if (a === 'load') { if (loadSaved()) { go('#/create'); toast('已读取存档'); } else toast('还没有存档，先去创造一个角色吧'); }
     }
+    // 沙盒 iframe（srcdoc）里的页内锚点不一定可靠：自己接管 “#/…” 链接
+    var lk = e.target.closest && e.target.closest('a[href^="#/"]');
+    if (lk && embedded) { e.preventDefault(); go(lk.getAttribute('href')); }
     if (e.target.closest('.mclose') || e.target === $('#modal')) closeModal();
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
@@ -153,8 +187,16 @@
 
   /* ───────── 路由 ───────── */
   var titleEl = $('#title'), pageEl = $('#page'), viewEl = $('#view');
+  var curHash = embedded0() ? '#/' : (location.hash || '#/');
+  function embedded0() { try { return window.top !== window.self; } catch (e) { return true; } }
+  var embedded = (function () { try { return window.top !== window.self; } catch (e) { return true; } })();
+  function go(h) {
+    curHash = h || '#/';
+    if (!embedded && (location.hash || '#/') !== curHash) { location.hash = curHash; return; }   // 独立网页：走浏览器历史
+    route();                                                                                       // 嵌在卡片里：自己切换
+  }
   function route() {
-    var hash = location.hash || '#/'; var parts = hash.replace(/^#\/?/, '').split('/');
+    var hash = curHash || '#/'; var parts = hash.replace(/^#\/?/, '').split('/');
     var name = parts[0] || '';
     closeModal();
     if (!name) {
@@ -170,9 +212,10 @@
       else { viewEl.appendChild(renderRoster()); document.title = '角色图鉴 · 魔女审判开端'; }
     }
     else if (name === 'world') { viewEl.appendChild(renderWorld()); document.title = '世界观介绍 · 魔女审判开端'; }
-    else location.hash = '#/';
+    else go('#/');
+    try { window.dispatchEvent(new Event('routed')); } catch (e) {}
   }
-  window.addEventListener('hashchange', route);
+  window.addEventListener('hashchange', function () { curHash = location.hash || '#/'; route(); });
 
   function consumePending() {
     try {
@@ -229,8 +272,19 @@
     var urlIn = h('input', { type: 'text', placeholder: '粘贴外部图片链接（https://…）' });
     var offSel = h('select', null, [h('option', { value: '' }, ['从角色图鉴选一位…'])].concat(CHARS.map(function (c) { return h('option', { value: c.id }, [c.cn + '（' + c.jp + '）']); })));
     offSel.addEventListener('change', function () { if (!offSel.value) return; state.portrait = { type: 'official', value: offSel.value }; setDirty(true); paintPortrait(); offSel.value = ''; });
+    var presets = h('div', { class: 'presets' }, [h('div', { class: 'ptitle' }, ['预设主角 · 点一下填入'])]);
+    var prow = h('div', { class: 'phero' });
+    (window.HEROES || []).forEach(function (hr) {
+      prow.appendChild(h('button', { class: 'ph1', type: 'button', title: hr.name + '（' + hr.gender + '，' + hr.age + '岁）', onclick: function () {
+        var keep = state.savedAt;
+        state = Object.assign(blank(), { name: hr.name, gender: hr.gender, pers: hr.pers, tags: hr.tags.slice(), witch: true, magicName: hr.magic, magicDesc: hr.magicDesc,
+          magicLimit: hr.magicLimit, sin: hr.sin, identity: '', look: hr.look, bg: hr.identity, portrait: { type: 'url', value: hr.img, label: hr.name }, _dirty: true, savedAt: keep });
+        go('#/create'); toast('已填入「' + hr.name + '」，可以继续修改');
+      } }, [h('img', { src: hr.av, alt: hr.name, draggable: 'false' }), h('b', { text: hr.name })]));
+    });
+    presets.appendChild(prow);
     var left = h('aside', { class: 'portrait' }, [
-      pbox, capName,
+      presets, pbox, capName,
       h('div', { class: 'prow' }, [
         h('button', { class: 'btn sm', onclick: function () { file.click(); } }, ['本地上传']),
         h('button', { class: 'btn sm ghost', onclick: function () { state.portrait = { type: '', value: '' }; setDirty(true); paintPortrait(); } }, ['清除'])
@@ -515,7 +569,7 @@
         h('a', { class: 'btn ghost', href: '#/roster/' + next.id }, [next.cn + ' ›']),
         c.no !== '—' ? h('button', { class: 'btn pink', onclick: function () {
           try { sessionStorage.setItem(PKEY, JSON.stringify({ type: 'official', value: c.id })); } catch (e) {}
-          location.hash = '#/create';
+          go('#/create');
         } }, ['以 TA 的立绘创造角色']) : null
       ])
     ]);

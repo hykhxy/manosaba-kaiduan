@@ -8,17 +8,26 @@
   var tx = 0, ty = 0, mx = 0, my = 0, hv = 0, hvT = 0, q = 1;
   function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
 
+  /* 画布跟随舞台：电脑 / 横屏是 1270×720（整体缩放），竖屏是整屏大小（不缩放） */
   function size() {
-    var s = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--s')) || 1;
+    var portrait = title.getAttribute('data-mode') === 'p';
+    var s = portrait ? 1 : (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--s')) || 1);
+    W = stage.offsetWidth || 1270; H = stage.offsetHeight || 720;
     q = clamp((window.devicePixelRatio || 1) * s, 1, 2);
     cv.width = Math.round(W * q); cv.height = Math.round(H * q);
+    cv.style.width = W + 'px'; cv.style.height = H + 'px';
   }
-  window.addEventListener('resize', function () { setTimeout(size, 80); });
+  window.addEventListener('stagefit', function () { setTimeout(size, 30); });
+  window.addEventListener('routed', function () { setTimeout(size, 30); });
   size();
 
-  /* 输入：鼠标 / 手指拖动 / 手机倾斜 */
+  /* 输入：鼠标 / 手指拖动 / 手机倾斜（旋转横屏时坐标轴要对调） */
   document.addEventListener('pointermove', function (e) {
-    tx = clamp((e.clientX / window.innerWidth - .5) * 2, -1, 1); ty = clamp((e.clientY / window.innerHeight - .5) * 2, -1, 1);
+    if (title.classList.contains('rot')) {
+      tx = clamp((e.clientY / window.innerHeight - .5) * 2, -1, 1); ty = clamp(-(e.clientX / window.innerWidth - .5) * 2, -1, 1);
+    } else {
+      tx = clamp((e.clientX / window.innerWidth - .5) * 2, -1, 1); ty = clamp((e.clientY / window.innerHeight - .5) * 2, -1, 1);
+    }
   }, { passive: true });
   window.addEventListener('deviceorientation', function (e) {
     if (e.gamma == null || e.beta == null) return;

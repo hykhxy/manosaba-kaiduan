@@ -7,16 +7,14 @@
 <title>魔法少女的魔女审判 · 开端（非官方同人网页）</title>
 <meta name="description" content="魔法少女ノ魔女裁判 同人互动开端：创造角色 / 角色图鉴 / 世界观介绍。非官方、免费、无收益。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23120000'/%3E%3Cpath d='M16 5l3 8h8l-6.5 5 2.5 8-7-5-7 5 2.5-8L5 13h8z' fill='%23ff2a3a'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/title.css">
+<link rel="stylesheet" href="css/style.css?v=14">
+<link rel="stylesheet" href="css/title.css?v=14">
 </head>
 <body>
 <div id="bgfill"></div>
 
 <!-- 标题页：1270×720 的固定画布，等比缩放，与视频逐像素对齐 -->
 <section id="title" class="view-title">
-  <!-- 竖屏 / 窄屏时的标题 -->
-  <header class="mtitle"><small>魔法少女ノ魔女裁判 · 开端</small><h1>魔法少女的<em>魔女审判</em></h1><p>MAGICAL GIRL WITCH TRIALS</p></header>
   <div id="stage-wrap">
     <div id="stage">
       <!-- 视差分层：背景(最远) → 光晕 → 巨型描边字 → 粒子 → 扫光 → 暗角 → HUD → 界面(最近) -->
@@ -52,14 +50,10 @@
           <a class="mi" style="--i:2" href="#/world"><em>03</em><span>世界观介绍</span></a>
           <button class="mi" style="--i:3" data-act="music" id="musicBtn" type="button"><em>04</em><span>音乐</span><b class="eq"><s></s><s></s><s></s></b></button>
         </nav>
+        <button id="rotBtn" class="rotb" data-act="rot" type="button" aria-label="切换横屏 / 竖屏"><i></i><span>横屏</span></button>
       </div>
     </div>
   </div>
-  <!-- 竖屏 / 窄屏时的大按钮菜单 -->
-  <nav id="mmenu" class="mmenu" aria-label="主菜单（手机）">
-    <a href="#/create" data-duo>创造角色</a><a href="#/roster" data-duo>角色图鉴</a><a href="#/world">世界观介绍</a>
-    <button data-act="music" class="mmusic" type="button">音乐</button>
-  </nav>
   <div class="fan">非官方同人网页 · 免费 · 无收益 · 与 Acacia / Re,AER 无关</div>
 </section>
 
@@ -83,10 +77,11 @@
 <div id="modal" class="modal" hidden><div class="mbox" role="dialog" aria-modal="true"><button class="mclose" aria-label="关闭">×</button><div id="mcontent"></div></div></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="js/data-chars.js"></script>
-<script src="js/data-world.js"></script>
-<script src="js/data-talents.js"></script>
-<script src="js/app.js"></script>
-<script src="js/fx.js"></script>
+<script src="js/data-chars.js?v=14"></script>
+<script src="js/data-world.js?v=14"></script>
+<script src="js/data-talents.js?v=14"></script>
+<script src="js/data-heroes.js?v=14"></script>
+<script src="js/app.js?v=14"></script>
+<script src="js/fx.js?v=14"></script>
 </body>
 </html>
