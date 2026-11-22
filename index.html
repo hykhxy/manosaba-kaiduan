@@ -22,15 +22,14 @@
       <!-- 视差分层：背景(最远) → 光晕 → 巨型描边字 → 粒子 → 扫光 → 暗角 → HUD → 界面(最近) -->
       <audio id="bgv" src="assets/bgm.m4a" loop preload="none"></audio>
       <!-- 全部是独立的图片部件（webp，透明底），各自按深度做视差 -->
-      <div class="l d d0"><img class="bg" src="assets/layers/bg.webp" alt="" draggable="false"></div>
+      <div class="l d d0"><img class="bgA" src="assets/scene/bgA.webp" alt="" draggable="false"><img class="bgB" src="assets/scene/bgB.webp" alt="" draggable="false"></div>
       <div class="l l-glow"></div>
       <div class="l l-words" aria-hidden="true"><b class="w1">TRIAL</b><b class="w2">WITCH</b></div>
-      <div class="l d d1"><img class="f-cards" src="assets/layers/cards.webp" alt="" draggable="false"></div>
-      <div class="l d d2"><img class="f-polaroid" src="assets/layers/polaroid.webp" alt="" draggable="false"></div>
-      <div class="l d d3"><img src="assets/layers/hiro.webp" alt="" draggable="false"></div>
-      <div class="l d d4"><img src="assets/layers/emma.webp" alt="" draggable="false"></div>
-      <div class="l d d5"><img class="f-insta" src="assets/layers/insta.webp" alt="" draggable="false"></div>
-      <div class="l d d6"><img class="f-sword" src="assets/layers/sword.webp" alt="" draggable="false"><img class="f-pen" src="assets/layers/pen.webp" alt="" draggable="false"></div>
+      <!-- 开局只有艾玛；碰到「创造角色 / 角色图鉴」后切成红色双人，希罗入场 -->
+      <div class="l d dE"><div class="ch emma"><img class="body" src="assets/scene/emma.webp" alt="" draggable="false"><img class="bl" src="assets/scene/emma-blink.webp" alt="" draggable="false"></div></div>
+      <div class="l d dH"><div class="ch hiro"><img class="body" src="assets/scene/hiro.webp" alt="" draggable="false"><img class="bl" src="assets/scene/hiro-blink.webp" alt="" draggable="false"></div></div>
+      <div class="l l-shade"></div>
+      <div class="l l-flash" id="flash"></div>
       <canvas id="fx" width="1270" height="720" aria-hidden="true"></canvas>
       <div class="l l-streak"></div>
       <div class="vig"></div>
@@ -48,8 +47,8 @@
           <i class="bar"></i>
         </div>
         <nav id="menu" class="menu" aria-label="主菜单">
-          <a class="mi" style="--i:0" href="#/create"><em>01</em><span>创造角色</span></a>
-          <a class="mi" style="--i:1" href="#/roster"><em>02</em><span>角色图鉴</span></a>
+          <a class="mi" style="--i:0" href="#/create" data-duo><em>01</em><span>创造角色</span></a>
+          <a class="mi" style="--i:1" href="#/roster" data-duo><em>02</em><span>角色图鉴</span></a>
           <a class="mi" style="--i:2" href="#/world"><em>03</em><span>世界观介绍</span></a>
           <button class="mi" style="--i:3" data-act="music" id="musicBtn" type="button"><em>04</em><span>音乐</span><b class="eq"><s></s><s></s><s></s></b></button>
         </nav>
@@ -58,7 +57,7 @@
   </div>
   <!-- 竖屏 / 窄屏时的大按钮菜单 -->
   <nav id="mmenu" class="mmenu" aria-label="主菜单（手机）">
-    <a href="#/create">创造角色</a><a href="#/roster">角色图鉴</a><a href="#/world">世界观介绍</a>
+    <a href="#/create" data-duo>创造角色</a><a href="#/roster" data-duo>角色图鉴</a><a href="#/world">世界观介绍</a>
     <button data-act="music" class="mmusic" type="button">音乐</button>
   </nav>
   <div class="fan">非官方同人网页 · 免费 · 无收益 · 与 Acacia / Re,AER 无关</div>

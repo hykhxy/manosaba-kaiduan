@@ -27,6 +27,19 @@
   stage.addEventListener('pointerover', function (e) { if (e.target.closest && e.target.closest('.mi')) hvT = 1; });
   stage.addEventListener('pointerout', function (e) { if (e.target.closest && e.target.closest('.mi')) hvT = 0; });
 
+  /* 开局只有艾玛（粉色）；鼠标 / 手指碰到「创造角色」「角色图鉴」时切成红色双人，离开后回到单人 */
+  var flash = document.getElementById('flash'), duo = false;
+  function setDuo(on) {
+    if (duo === on) return; duo = on; title.classList.toggle('duo', on);
+    if (on && flash) { flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go'); }
+  }
+  function duoEl(t) { return t && t.closest ? t.closest('[data-duo]') : null; }
+  document.addEventListener('pointerover', function (e) { if (duoEl(e.target)) setDuo(true); });
+  document.addEventListener('pointerout', function (e) { if (duoEl(e.target) && !duoEl(e.relatedTarget)) setDuo(false); });
+  document.addEventListener('focusin', function (e) { if (duoEl(e.target)) setDuo(true); });
+  document.addEventListener('focusout', function (e) { if (duoEl(e.target) && !duoEl(e.relatedTarget)) setDuo(false); });
+  window.addEventListener('hashchange', function () { setDuo(false); });
+
   /* 精灵图 */
   function petal(c1, c2) {
     var s = document.createElement('canvas'); s.width = s.height = 64; var g = s.getContext('2d');
