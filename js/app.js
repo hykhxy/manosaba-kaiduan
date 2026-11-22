@@ -104,8 +104,9 @@
   window.addEventListener('resize', fit); fit();
   var musicOn = false;
   function setMusic(on) {
-    musicOn = on; bgv.muted = !on;
-    if (on) { var p = bgv.play(); if (p && p.catch) p.catch(function () {}); }
+    musicOn = on;
+    if (on) { var p = bgv.play(); if (p && p.catch) p.catch(function () { musicOn = false; $$('[data-act=music]').forEach(function (b) { b.classList.remove('on'); }); }); }
+    else bgv.pause();
     $$('[data-act=music]').forEach(function (b) { b.classList.toggle('on', on); });
   }
   function aboutModal() {
@@ -158,7 +159,6 @@
     closeModal();
     if (!name) {
       titleEl.hidden = false; pageEl.hidden = true; document.title = '魔法少女的魔女审判 · 开端（非官方同人网页）';
-      if (bgv.paused) { var p = bgv.play(); if (p && p.catch) p.catch(function () {}); }
       return;
     }
     titleEl.hidden = true; pageEl.hidden = false; window.scrollTo(0, 0);
@@ -551,6 +551,4 @@
   /* ───────── 启动 ───────── */
   loadSaved();
   route();
-  // 部分浏览器首帧拒绝自动播放：用户首次触摸时补一次
-  document.addEventListener('pointerdown', function once() { if (bgv.paused && !titleEl.hidden) { var p = bgv.play(); if (p && p.catch) p.catch(function () {}); } document.removeEventListener('pointerdown', once); });
 })();

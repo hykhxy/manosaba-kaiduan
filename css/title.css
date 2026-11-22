@@ -6,16 +6,34 @@
 .l{position:absolute;inset:0;pointer-events:none;will-change:transform}
 #fx{position:absolute;left:0;top:0;width:1270px;height:720px;pointer-events:none}
 
-/* L0 背景：视频 + 盖住烘焙文字的毛玻璃（与视频同层移动，所以永远对得上） */
-.l-bg{transform:perspective(1500px) rotateY(calc(var(--mx)*1.6deg)) rotateX(calc(var(--my)*-1.1deg)) translate3d(calc(var(--mx)*-18px),calc(var(--my)*-11px),0) scale(1.075);transform-origin:50% 50%}
-#bgv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.pt{position:absolute;display:block;backdrop-filter:blur(13px) saturate(1.1);-webkit-backdrop-filter:blur(13px) saturate(1.1);background:rgba(22,0,6,.5)}
-.pt-l{left:0;top:0;width:290px;height:720px;background:linear-gradient(90deg,rgba(20,0,5,.84),rgba(20,0,5,.62) 66%,rgba(20,0,5,.35));
-  -webkit-mask-image:linear-gradient(90deg,#000 0,#000 60%,transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 60%,transparent 100%)}
-.pt-r,.pt-r2,.pt-x{-webkit-mask-image:radial-gradient(ellipse at center,#000 52%,transparent 100%);mask-image:radial-gradient(ellipse at center,#000 52%,transparent 100%)}
-.pt-r{left:1150px;top:420px;width:150px;height:225px}
-.pt-r2{left:1118px;top:262px;width:96px;height:140px;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);background:rgba(22,0,6,.18)}
-.pt-x{left:1110px;top:650px;width:170px;height:60px}
+/* 图片部件：每个部件是一张 1270×720 的透明 webp，按深度各自做视差（越近位移越大）并各有自己的漂浮动画 */
+#bgv{display:none}
+.d img{position:absolute;left:0;top:0;width:1270px;height:720px;user-select:none;-webkit-user-drag:none}
+.d0{transform:translate3d(calc(var(--mx)*-10px),calc(var(--my)*-6px),0) scale(1.1)}
+.d0 img{animation:bgPulse 9s ease-in-out infinite alternate}
+@keyframes bgPulse{to{scale:1.035;filter:brightness(1.18) saturate(1.12)}}
+.d1{transform:translate3d(calc(var(--mx)*-14px),calc(var(--my)*-8px),0)}
+.d2{transform:translate3d(calc(var(--mx)*-18px),calc(var(--my)*-10px),0)}
+.d3{transform:translate3d(calc(var(--mx)*-24px),calc(var(--my)*-12px),0) rotateY(calc(var(--mx)*-1deg))}
+.d4{transform:translate3d(calc(var(--mx)*-32px),calc(var(--my)*-16px),0) rotateY(calc(var(--mx)*-1.3deg))}
+.d5{transform:translate3d(calc(var(--mx)*-40px),calc(var(--my)*-22px),0)}
+.d6{transform:translate3d(calc(var(--mx)*-52px),calc(var(--my)*-28px),0)}
+.d1 img,.d2 img,.d5 img,.d6 img{filter:drop-shadow(0 6px 14px rgba(0,0,0,.6))}
+.d3 img,.d4 img{filter:drop-shadow(0 0 16px rgba(0,0,0,.55))}
+.d3 img{transform-origin:400px 720px;animation:breathe1 5.2s ease-in-out infinite alternate}
+.d4 img{transform-origin:950px 720px;animation:breathe2 4.6s ease-in-out infinite alternate}
+@keyframes breathe1{from{translate:0 0;scale:1}to{translate:-3px -7px;scale:1.012}}
+@keyframes breathe2{from{translate:0 0;scale:1}to{translate:3px -9px;scale:1.014}}
+.f-cards{transform-origin:640px 120px;animation:bob1 6.5s ease-in-out infinite alternate}
+.f-polaroid{transform-origin:106px 112px;animation:sway 5.5s ease-in-out infinite alternate}
+.f-insta{transform-origin:1150px 330px;animation:bob2 7s ease-in-out infinite alternate}
+.f-sword{transform-origin:130px 550px;animation:sway2 6s ease-in-out infinite alternate}
+.f-pen{transform-origin:1040px 590px;animation:sway3 4.8s ease-in-out infinite alternate}
+@keyframes bob1{from{translate:0 -4px;rotate:-.5deg}to{translate:0 7px;rotate:.7deg}}
+@keyframes sway{from{rotate:-2.2deg;translate:0 -3px}to{rotate:2deg;translate:0 6px}}
+@keyframes bob2{from{translate:0 -6px;rotate:-.8deg}to{translate:-4px 8px;rotate:.8deg}}
+@keyframes sway2{from{rotate:-1.6deg}to{rotate:1.8deg}}
+@keyframes sway3{from{rotate:-3deg;translate:0 -2px}to{rotate:3deg;translate:2px 4px}}
 
 /* L1 光晕（随鼠标反向漂移，并随悬停增亮） */
 .l-glow{background:radial-gradient(560px 440px at 16% 80%,rgba(255,30,60,.38),transparent 70%),radial-gradient(560px 440px at 84% 22%,rgba(255,110,180,.32),transparent 70%);
@@ -102,5 +120,5 @@
   .fan{position:static;margin-top:14px;padding:0 12px}
 }
 @media (prefers-reduced-motion:reduce){
-  .l-glow,.w1,.w2,.l-streak::before,.ttl .t2{animation:none}
+  .l-glow,.w1,.w2,.l-streak::before,.ttl .t2,.d img{animation:none}
 }

@@ -18,7 +18,7 @@
 
   /* 输入：鼠标 / 手指拖动 / 手机倾斜 */
   document.addEventListener('pointermove', function (e) {
-    tx = (e.clientX / window.innerWidth - .5) * 2; ty = (e.clientY / window.innerHeight - .5) * 2;
+    tx = clamp((e.clientX / window.innerWidth - .5) * 2, -1, 1); ty = clamp((e.clientY / window.innerHeight - .5) * 2, -1, 1);
   }, { passive: true });
   window.addEventListener('deviceorientation', function (e) {
     if (e.gamma == null || e.beta == null) return;

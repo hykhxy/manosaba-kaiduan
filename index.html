@@ -20,12 +20,17 @@
   <div id="stage-wrap">
     <div id="stage">
       <!-- 视差分层：背景(最远) → 光晕 → 巨型描边字 → 粒子 → 扫光 → 暗角 → HUD → 界面(最近) -->
-      <div class="l l-bg">
-        <video id="bgv" src="assets/opening.mp4" poster="assets/poster.jpg" autoplay muted loop playsinline preload="auto"></video>
-        <i class="pt pt-l"></i><i class="pt pt-r"></i><i class="pt pt-r2"></i><i class="pt pt-x"></i>
-      </div>
+      <audio id="bgv" src="assets/bgm.m4a" loop preload="none"></audio>
+      <!-- 全部是独立的图片部件（webp，透明底），各自按深度做视差 -->
+      <div class="l d d0"><img class="bg" src="assets/layers/bg.webp" alt="" draggable="false"></div>
       <div class="l l-glow"></div>
       <div class="l l-words" aria-hidden="true"><b class="w1">TRIAL</b><b class="w2">WITCH</b></div>
+      <div class="l d d1"><img class="f-cards" src="assets/layers/cards.webp" alt="" draggable="false"></div>
+      <div class="l d d2"><img class="f-polaroid" src="assets/layers/polaroid.webp" alt="" draggable="false"></div>
+      <div class="l d d3"><img src="assets/layers/hiro.webp" alt="" draggable="false"></div>
+      <div class="l d d4"><img src="assets/layers/emma.webp" alt="" draggable="false"></div>
+      <div class="l d d5"><img class="f-insta" src="assets/layers/insta.webp" alt="" draggable="false"></div>
+      <div class="l d d6"><img class="f-sword" src="assets/layers/sword.webp" alt="" draggable="false"><img class="f-pen" src="assets/layers/pen.webp" alt="" draggable="false"></div>
       <canvas id="fx" width="1270" height="720" aria-hidden="true"></canvas>
       <div class="l l-streak"></div>
       <div class="vig"></div>
