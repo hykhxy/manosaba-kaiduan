@@ -2,9 +2,8 @@
 (function () {
   'use strict';
   var CHARS = window.CHARS, PLACES = window.PLACES, WORLD = window.WORLD, FACTIONS = window.FACTIONS,
-      LINES = window.LINES, TALENTS = window.TALENTS, TIERS = window.TIERS;
+      LINES = window.LINES;
   var KEY = 'manosaba.char.v1', PKEY = 'manosaba.pendingPortrait';
-  var MAX_TAL = 5, MAX_T1 = 2;
 
   /* ───────── 小工具 ───────── */
   function $(s, r) { return (r || document).querySelector(s); }
@@ -87,11 +86,9 @@
     return box;
   }
   function charCands(c) { return bgmCands(c.img); }
-  function tierOf(k) { return TIERS[k - 1]; }
   function charById(id) { for (var i = 0; i < CHARS.length; i++) if (CHARS[i].id === id) return CHARS[i]; return null; }
   function placeById(id) { for (var i = 0; i < PLACES.length; i++) if (PLACES[i].id === id) return PLACES[i]; return null; }
   function lineById(id) { for (var i = 0; i < LINES.length; i++) if (LINES[i].id === id) return LINES[i]; return null; }
-  function talById(id) { for (var i = 0; i < TALENTS.length; i++) if (TALENTS[i].id === id) return TALENTS[i]; return null; }
 
   /* ───────── 标题页：等比缩放 / 音乐 ───────── */
   var bgv = $('#bgv');
@@ -172,7 +169,7 @@
   var state = blank();
   function blank() {
     return { name: '', gender: '女', genderCustom: '', pers: '', tags: [], witch: true, magicName: '', magicDesc: '', magicLimit: '', sin: '',
-      identity: '', line: 'l1', place: 'cells', talents: [], look: '', bg: '', portrait: { type: '', value: '', label: '' } };
+      identity: '', line: 'l1', place: 'cells', look: '', bg: '', portrait: { type: '', value: '', label: '' } };
   }
   function loadSaved() {
     try { var s = localStorage.getItem(KEY); if (!s) return false; var o = JSON.parse(s); state = Object.assign(blank(), o); return true; }
@@ -403,63 +400,6 @@
       h('div', { class: 'f' }, [h('label', null, ['开局时间线']), lineSel, lineDesc]), placeWrap, placeDesc
     ]));
 
-    // 天赋
-    var tab = 0, kw = '';
-    var tgrid = h('div', { class: 'tgrid' }), tcount = h('span', { class: 'tcount' });
-    var tabBox = h('div', { class: 'chips' });
-    function tcnt(k) { return TALENTS.filter(function (t) { return t.tier === k; }).length; }
-    function paintTabs() {
-      tabBox.innerHTML = '';
-      [{ k: 0, name: '全部', n: TALENTS.length }].concat(TIERS.map(function (t) { return { k: t.k, name: t.name, n: tcnt(t.k), c: t.color }; })).forEach(function (t) {
-        var c = h('button', { class: 'chip' + (tab === t.k ? ' on' : ''), type: 'button', style: t.c ? { 'border-color': t.c } : null, onclick: function () { tab = t.k; paintTabs(); paintTalents(); } }, [t.name + ' ' + t.n]);
-        tabBox.appendChild(c);
-      });
-    }
-    function selCount() { var c1 = 0; state.talents.forEach(function (id) { var t = talById(id); if (t && t.tier === 1) c1++; }); return c1; }
-    function paintCount() { tcount.innerHTML = '已选 <b>' + state.talents.length + '</b> / ' + MAX_TAL + '（一级最多 ' + MAX_T1 + '）'; }
-    function paintTalents() {
-      tgrid.innerHTML = '';
-      TALENTS.forEach(function (t) {
-        if (tab && t.tier !== tab) return;
-        if (kw && (t.name + t.desc + t.cost).indexOf(kw) < 0) return;
-        var tr = tierOf(t.tier), on = state.talents.indexOf(t.id) >= 0;
-        var card = h('button', { type: 'button', class: 'tal' + (on ? ' on' : '') + (tr.cost ? '' : ' free'), style: { '--c': tr.color }, onclick: function () {
-          var i = state.talents.indexOf(t.id);
-          if (i >= 0) state.talents.splice(i, 1);
-          else {
-            if (state.talents.length >= MAX_TAL) { toast('最多选择 ' + MAX_TAL + ' 个天赋'); return; }
-            if (t.tier === 1 && selCount() >= MAX_T1) { toast('一级天赋最多选 ' + MAX_T1 + ' 个'); return; }
-            state.talents.push(t.id);
-          }
-          setDirty(true); paintCount(); card.classList.toggle('on', i < 0);
-        } }, [
-          h('div', { class: 'tn' }, [h('span', { class: 'tt', text: tr.name }), h('span', { text: t.name })]),
-          h('p', { text: t.desc }),
-          tr.cost ? h('div', { class: 'tc' }, [h('b', { text: '代价' }), t.cost]) : null
-        ]);
-        tgrid.appendChild(card);
-      });
-      if (!tgrid.children.length) tgrid.appendChild(h('p', { class: 'hint', text: '没有符合条件的天赋。' }));
-    }
-    var search = h('input', { class: 'inp', type: 'text', placeholder: '搜索天赋名称或效果…' });
-    search.addEventListener('input', function () { kw = search.value.trim(); paintTalents(); });
-    var roll = h('button', { class: 'btn sm pink', type: 'button', onclick: function () {
-      var pool = TALENTS.map(function (t) { return { t: t, w: [0, 1, 3, 5, 6][t.tier] }; }); var pick = [], c1 = 0;
-      while (pick.length < 3) {
-        var tot = pool.reduce(function (a, x) { return a + x.w; }, 0), r = Math.random() * tot, k = 0;
-        for (; k < pool.length; k++) { r -= pool[k].w; if (r <= 0) break; }
-        var it = pool.splice(Math.min(k, pool.length - 1), 1)[0].t;
-        if (it.tier === 1 && c1 >= MAX_T1) continue; if (it.tier === 1) c1++; pick.push(it.id);
-      }
-      state.talents = pick; setDirty(true); paintCount(); paintTalents(); toast('随机抽到 3 个天赋');
-    } }, ['随机抽取 3 个']);
-    var clearT = h('button', { class: 'btn sm ghost', type: 'button', onclick: function () { state.talents = []; setDirty(true); paintCount(); paintTalents(); } }, ['清空']);
-    paintTabs(); paintCount(); paintTalents();
-    right.appendChild(h('section', { class: 'sec' }, [
-      h('h2', null, ['天赋', h('small', null, ['四个等级共 ' + TALENTS.length + ' 个：一、二级无代价；三、四级有代价'])]),
-      tabBox, h('div', { class: 'ttools', style: { marginTop: '12px' } }, [search, roll, clearT, tcount]), tgrid
-    ]));
-
     // 操作栏
     var saveBtn = h('button', { class: 'btn', type: 'button', onclick: function () {
       if (doSave()) { setDirty(false); toast('已保存'); } else toast('保存失败：浏览器存储已满或被禁用，请使用“创造答案”复制保存');
@@ -475,7 +415,7 @@
     if (!dirty && !state.savedAt) stateEl.textContent = '尚未保存';
 
     root.appendChild(left); root.appendChild(right);
-    var head = h('div', null, [h('h1', { class: 'pt', html: '创造<em>角色</em>' }), h('p', { class: 'sub', text: '填写你的囚犯：姓名、性别、性格、身份、开局地点与天赋。点“保存”即存入本机，点“创造答案”会弹出整理好的完整设定，点击即可复制。' })]);
+    var head = h('div', null, [h('h1', { class: 'pt', html: '创造<em>角色</em>' }), h('p', { class: 'sub', text: '填写你的囚犯：姓名、性别、性格、身份与开局地点。点“保存”即存入本机，点“创造答案”会弹出整理好的完整设定，点击即可复制。' })]);
     var wrap = h('div'); wrap.appendChild(head); wrap.appendChild(root); return wrap;
   }
 
@@ -500,12 +440,6 @@
     if (s.bg.trim()) L.push('背景：' + s.bg.trim());
     L.push('开局时间线：' + (ln ? ln.n : ''));
     L.push('开局地点：' + (pl ? pl.n + '（' + pl.jp + '）' : '（未选择）'));
-    L.push('天赋（' + s.talents.length + '）：');
-    if (!s.talents.length) L.push('  （未选择）');
-    s.talents.forEach(function (id, i) {
-      var t = talById(id); if (!t) return; var tr = tierOf(t.tier);
-      L.push('  ' + (i + 1) + '. 【' + t.name + '】（' + tr.name + '·' + ['', '一', '二', '三', '四'][t.tier] + '级）' + t.desc + (t.cost ? ' 代价：' + t.cost : ''));
-    });
     var p = s.portrait || {};
     if (p.type === 'url') L.push('立绘：' + p.value);
     else if (p.type === 'official') { var c = charById(p.value); L.push('立绘：图鉴立绘 · ' + (c ? c.cn + '（' + c.img + '）' : '')); }
@@ -519,7 +453,7 @@
     function doCopy() { copyText(txt).then(function (ok) { okEl.textContent = ok ? '已复制到剪贴板 ✓' : '复制失败，请手动全选复制'; toast(ok ? '已复制' : '复制失败，请手动选中复制'); }); }
     box.addEventListener('click', doCopy);
     var warn = [];
-    if (!state.name.trim()) warn.push('姓名'); if (!state.pers.trim() && !state.tags.length) warn.push('性格'); if (state.witch && !state.magicName.trim()) warn.push('魔法'); if (!state.talents.length) warn.push('天赋');
+    if (!state.name.trim()) warn.push('姓名'); if (!state.pers.trim() && !state.tags.length) warn.push('性格'); if (state.witch && !state.magicName.trim()) warn.push('魔法');
     openModal(h('div', null, [
       h('h3', { text: '创造答案' }),
       h('p', { class: 'hint', text: '这是你全部填写好的设定。点击下面的文字框（或“复制”按钮）即可复制全部内容。' + (warn.length ? '　提示：还没填 ' + warn.join('、') + '。' : '') }),
