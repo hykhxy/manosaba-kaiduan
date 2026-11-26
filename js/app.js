@@ -85,7 +85,14 @@
     box.appendChild(img);
     return box;
   }
-  function charCands(c) { return bgmCands(c.img); }
+  function charCands(c) { return (c.imgs && c.imgs.length) ? c.imgs.slice() : bgmCands(c.img); }
+  function imgFallback(cands, attrs) {
+    var list = (cands || []).slice(), idx = 0;
+    var el = h('img', Object.assign({ referrerpolicy: 'no-referrer', decoding: 'async' }, attrs || {}));
+    el.addEventListener('error', function () { idx++; if (idx < list.length) el.src = list[idx]; });
+    if (list.length) el.src = list[0];
+    return el;
+  }
   function charById(id) { for (var i = 0; i < CHARS.length; i++) if (CHARS[i].id === id) return CHARS[i]; return null; }
   function placeById(id) { for (var i = 0; i < PLACES.length; i++) if (PLACES[i].id === id) return PLACES[i]; return null; }
   function lineById(id) { for (var i = 0; i < LINES.length; i++) if (LINES[i].id === id) return LINES[i]; return null; }
@@ -241,11 +248,11 @@
       var node;
       if (p.type === 'data') node = pic([p.value], '角色立绘', 'contain', { eager: true });
       else if (p.type === 'official') { var c = charById(p.value); node = c ? pic(charCands(c), c.cn, 'contain', { eager: true }) : pic([]); }
-      else if (p.type === 'url') node = pic([p.value], '角色立绘', 'contain', { eager: true });
+      else if (p.type === 'url') node = pic((p.cands && p.cands.length) ? p.cands : [p.value], '角色立绘', 'contain', { eager: true });
       else node = h('div', { class: 'imgbox' }, [h('div', { class: 'ph', html: '<b style="font-size:42px;opacity:.5">?</b>在这里放入立绘<br>可本地上传、粘贴外部图片链接<br>或从图鉴里选一位' })]);
       pbox.appendChild(node);
       capName.textContent = state.name || '（未命名）';
-      pinfo.textContent = p.type === 'data' ? '本地上传（仅保存在你的浏览器）' : p.type === 'url' ? '外部图片链接' : p.type === 'official' ? '图鉴立绘（外链）' : '尚未设置立绘';
+      pinfo.textContent = p.type === 'data' ? '本地上传（仅保存在你的浏览器）' : p.type === 'url' ? (p.code ? '预设主角立绘（' + p.code + ' · 多线路图床）' : '外部图片链接') : p.type === 'official' ? '图鉴立绘（多线路图床）' : '尚未设置立绘';
       capName.innerHTML = ''; capName.appendChild(document.createTextNode(state.name || '（未命名）')); capName.appendChild(pinfo);
     }
     var file = h('input', { type: 'file', accept: 'image/*', style: { display: 'none' } });
@@ -275,9 +282,9 @@
       prow.appendChild(h('button', { class: 'ph1', type: 'button', title: hr.name + '（' + hr.gender + '，' + hr.age + '岁）', onclick: function () {
         var keep = state.savedAt;
         state = Object.assign(blank(), { name: hr.name, gender: hr.gender, pers: hr.pers, tags: hr.tags.slice(), witch: true, magicName: hr.magic, magicDesc: hr.magicDesc,
-          magicLimit: hr.magicLimit, sin: hr.sin, identity: '', look: hr.look, bg: hr.identity, portrait: { type: 'url', value: hr.img, label: hr.name }, _dirty: true, savedAt: keep });
+          magicLimit: hr.magicLimit, sin: hr.sin, identity: '', look: hr.look, bg: hr.identity, portrait: { type: 'url', value: hr.img, cands: hr.imgs, code: hr.code, label: hr.name }, _dirty: true, savedAt: keep });
         go('#/create'); toast('已填入「' + hr.name + '」，可以继续修改');
-      } }, [h('img', { src: hr.av, alt: hr.name, draggable: 'false' }), h('b', { text: hr.name })]));
+      } }, [imgFallback(hr.avs || [hr.av], { alt: hr.name, draggable: 'false' }), h('b', { text: hr.name })]));
     });
     presets.appendChild(prow);
     var left = h('aside', { class: 'portrait' }, [
@@ -441,7 +448,10 @@
     L.push('开局时间线：' + (ln ? ln.n : ''));
     L.push('开局地点：' + (pl ? pl.n + '（' + pl.jp + '）' : '（未选择）'));
     var p = s.portrait || {};
-    if (p.type === 'url') L.push('立绘：' + p.value);
+    if (p.type === 'url') {
+      if (p.code) L.push('立绘编号：' + p.code + '（' + (p.label || '') + '）');
+      L.push('立绘：' + p.value);
+    }
     else if (p.type === 'official') { var c = charById(p.value); L.push('立绘：图鉴立绘 · ' + (c ? c.cn + '（' + c.img + '）' : '')); }
     else if (p.type === 'data') L.push('立绘：（本地上传的图片，无法随文字复制）');
     return L.join('\n');
@@ -480,7 +490,7 @@
       var b = h('button', { class: 'chip' + (tab === t[0] ? ' on' : ''), type: 'button', onclick: function () { tab = t[0]; $$('.chip', tabs).forEach(function (x) { x.classList.toggle('on', x === b); }); paint(); } }, [t[1]]); tabs.appendChild(b);
     });
     wrap.appendChild(h('h1', { class: 'pt', html: '角色<em>图鉴</em>' }));
-    wrap.appendChild(h('p', { class: 'sub', text: '十三位囚犯、大魔女月代雪、典狱长与看守。立绘为官方原画（外链自 Bangumi），资料对照官方公开信息与世界卡设定集整理，含剧透。' }));
+    wrap.appendChild(h('p', { class: 'sub', text: '十三位囚犯、大魔女月代雪、典狱长与看守。立绘采用国内高速多线路图床自动降级切换，资料对照官方公开信息与世界卡设定集整理，含剧透。' }));
     wrap.appendChild(tabs); wrap.appendChild(grid); paint(); return wrap;
   }
   function renderDetail(c) {

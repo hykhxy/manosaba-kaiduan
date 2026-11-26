@@ -3,7 +3,7 @@
   var B = 'https://hykhxy.github.io/manosaba-kaiduan/assets/card/';
   window.HEROES = [
     {
-      id: 'h1', name: '久远寺零', jp: '久遠寺 ゼロ', gender: '男', age: 21, img: B + 'hero-1.webp', av: B + 'av-1.webp',
+      id: 'h1', code: 'P1', name: '久远寺零', jp: '久遠寺 ゼロ', gender: '男', age: 21, img: 'https://assets.kotodamai.com/i/I9rYzO4VJt7zyiQ82hzKftQ5ZxWJtqdy/image.webp', imgs: ["https://assets.kotodamai.com/i/I9rYzO4VJt7zyiQ82hzKftQ5ZxWJtqdy/image.webp", "https://testingcf.jsdelivr.net/gh/hykhxy/manosaba-kaiduan@main/assets/card/hero-1.webp", "https://hykhxy.github.io/manosaba-kaiduan/assets/card/hero-1.webp"], av: 'https://assets.kotodamai.com/i/YucRYYxL2M4_TMVSXEqBO85qZQIEr7VY/image.webp', avs: ["https://assets.kotodamai.com/i/YucRYYxL2M4_TMVSXEqBO85qZQIEr7VY/image.webp", "https://testingcf.jsdelivr.net/gh/hykhxy/manosaba-kaiduan@main/assets/card/av-1.webp", "https://hykhxy.github.io/manosaba-kaiduan/assets/card/av-1.webp"],
       tags: ['冷静', '不信任他人', '内向', '嘴硬心软'],
       pers: '寡言冷静，说话像在读一份报告，习惯先观察再开口。对谁都保持三步以上的距离，被触碰时会下意识后退。其实记得每一个对他好过的人，只是不知道怎样回应，常常用一句生硬的“知道了”掩饰。',
       sin: '沉默的共犯', magic: '残响', magicJp: '残響',
@@ -16,7 +16,7 @@
       favor: '艾玛 ★★★☆☆ 同病相怜，愿意互相掩护；希罗 ★★☆☆☆ 被审视，尚未取得信任；安安 ★★★☆☆ 唯一不逼她说话的人，信任缓慢上升；诺亚 ★★☆☆☆ 觉得他“声音很干净”；梅露露 ★★★★☆ 对他格外温柔，这份温柔本身值得警惕；雪莉 ★☆☆☆☆ 觉得他“不好玩”。'
     },
     {
-      id: 'h2', name: '朝比奈阳', jp: '朝比奈 ヨウ', gender: '男', age: 20, img: B + 'hero-2.webp', av: B + 'av-2.webp',
+      id: 'h2', code: 'P2', name: '朝比奈阳', jp: '朝比奈 ヨウ', gender: '男', age: 20, img: 'https://assets.kotodamai.com/i/MvHM0K7CEvPvIBjAdnsIu2sk2thss80f/image.webp', imgs: ["https://assets.kotodamai.com/i/MvHM0K7CEvPvIBjAdnsIu2sk2thss80f/image.webp", "https://testingcf.jsdelivr.net/gh/hykhxy/manosaba-kaiduan@main/assets/card/hero-2.webp", "https://hykhxy.github.io/manosaba-kaiduan/assets/card/hero-2.webp"], av: 'https://assets.kotodamai.com/i/hvwOM8BiXq9wqzAWABJLeB1en8GoDoUg/image.webp', avs: ["https://assets.kotodamai.com/i/hvwOM8BiXq9wqzAWABJLeB1en8GoDoUg/image.webp", "https://testingcf.jsdelivr.net/gh/hykhxy/manosaba-kaiduan@main/assets/card/av-2.webp", "https://hykhxy.github.io/manosaba-kaiduan/assets/card/av-2.webp"],
       tags: ['开朗', '乐天派', '重情义', '爱撒谎'],
       pers: '爱笑、自来熟，几句话就能让陌生人放下防备，是天生的气氛制造者。笑容之下其实极度害怕被丢下，所以拼命让自己“有用”。说谎成性，但从不骗朋友的性命，对他而言谎言是用来挡住别人痛苦的伞。',
       sin: '笑着背叛的人', magic: '借火', magicJp: '借り火',
@@ -29,7 +29,7 @@
       favor: '艾玛 ★★★★☆ 像家人一样亲近；希罗 ★★☆☆☆ 争吵不断，但她在暗中观察他；汉娜 ★★★☆☆ 嘴上嫌弃他不懂礼仪，却总让他帮忙；可可 ★★★☆☆ 把他当成“好用的素材”；雪莉 ★★★★☆ 臭味相投的好搭档；奈叶香 ★☆☆☆☆ 认为他笑得太假。'
     },
     {
-      id: 'h3', name: '一之濑凛音', jp: '一ノ瀬 リンネ', gender: '女', age: 22, img: B + 'hero-3.webp', av: B + 'av-3.webp',
+      id: 'h3', code: 'P3', name: '一之濑凛音', jp: '一ノ瀬 リンネ', gender: '女', age: 22, img: 'https://assets.kotodamai.com/i/PA62iD8annhQ_0CihaeGWUSbB6HX5kQf/image.webp', imgs: ["https://assets.kotodamai.com/i/PA62iD8annhQ_0CihaeGWUSbB6HX5kQf/image.webp", "https://testingcf.jsdelivr.net/gh/hykhxy/manosaba-kaiduan@main/assets/card/hero-3.webp", "https://hykhxy.github.io/manosaba-kaiduan/assets/card/hero-3.webp"], av: 'https://assets.kotodamai.com/i/yKPSm9pgifd4UisGZezYCV6TOGZwQoPp/image.webp', avs: ["https://assets.kotodamai.com/i/yKPSm9pgifd4UisGZezYCV6TOGZwQoPp/image.webp", "https://testingcf.jsdelivr.net/gh/hykhxy/manosaba-kaiduan@main/assets/card/av-3.webp", "https://hykhxy.github.io/manosaba-kaiduan/assets/card/av-3.webp"],
       tags: ['冷静', '洁癖', '正义感强', '傲娇'],
       pers: '端庄、克制、说话条理分明，像一本永远合着的书。对逻辑与秩序近乎偏执，容不下含糊与借口，一旦认定某件事“不对”就一定要说出口。外冷内热，被人真心夸奖时会别过脸去，耳尖悄悄变红。',
       sin: '冷漠的旁观者', magic: '诘棋', magicJp: '詰み',
@@ -42,7 +42,7 @@
       favor: '希罗 ★★★☆☆ 互相较劲的对手，也是最想争取的盟友；艾玛 ★★★☆☆ 觉得她“看起来很会受伤”，忍不住想保护；蕾雅 ★★☆☆☆ 彼此保持礼貌的试探；可可 ★★★☆☆ 嘴上互损，心里认可；奈叶香 ★★★★☆ 同样讨厌规则，格外合拍；亚里沙 ★☆☆☆☆ 被她吼过两次。'
     },
     {
-      id: 'h4', name: '白鸟雫', jp: '白鳥 シズク', gender: '女', age: 19, img: B + 'hero-4.webp', av: B + 'av-4.webp',
+      id: 'h4', code: 'P4', name: '白鸟雫', jp: '白鳥 シズク', gender: '女', age: 19, img: 'https://assets.kotodamai.com/i/ecnfgsC7UxOXYviFsmT2ceLAhjaWA4Qn/image.webp', imgs: ["https://assets.kotodamai.com/i/ecnfgsC7UxOXYviFsmT2ceLAhjaWA4Qn/image.webp", "https://testingcf.jsdelivr.net/gh/hykhxy/manosaba-kaiduan@main/assets/card/hero-4.webp", "https://hykhxy.github.io/manosaba-kaiduan/assets/card/hero-4.webp"], av: 'https://assets.kotodamai.com/i/8Xz5wCTLyqlDU9YIHkT8g6lwldcne9Cz/image.webp', avs: ["https://assets.kotodamai.com/i/8Xz5wCTLyqlDU9YIHkT8g6lwldcne9Cz/image.webp", "https://testingcf.jsdelivr.net/gh/hykhxy/manosaba-kaiduan@main/assets/card/av-4.webp", "https://hykhxy.github.io/manosaba-kaiduan/assets/card/av-4.webp"],
       tags: ['温柔', '嘴硬心软', '好奇心旺盛', '重情义'],
       pers: '说话轻声细语，总是带着温柔狡黠的笑，擅长在不经意间让别人说出真心话。外表像最好欺负的人，实际上记仇又聪明，会把别人对她的恶意一笔一笔记在心里。真正信任的人面前，会露出少女般害羞又任性的一面。',
       sin: '被爱着的伪善者', magic: '回音镜', magicJp: '反響の鏡',

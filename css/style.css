@@ -10,7 +10,7 @@ body{overflow-x:hidden}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 [hidden]{display:none!important}
-#bgfill{position:fixed;inset:0;z-index:-2;background:#0a0204 url(../assets/poster.jpg) center/cover no-repeat;filter:blur(26px) brightness(.38) saturate(1.2);transform:scale(1.08)}
+#bgfill{position:fixed;inset:0;z-index:-2;background:#0a0204 url(../assets/scene/bgA.webp) center/cover no-repeat;filter:blur(26px) brightness(.38) saturate(1.2);transform:scale(1.08)}
 
 /* 标题页样式已移至 title.css */
 
@@ -125,8 +125,8 @@ h1.pt em{font-style:normal;color:var(--red)}
 .rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:14px}
 .rc{position:relative;display:block;border-radius:6px 18px 6px 18px;overflow:hidden;background:var(--card);border:1px solid var(--line);transition:.18s}
 .rc:hover{transform:translateY(-4px);border-color:var(--c);box-shadow:0 14px 34px -8px var(--c)}
-.rc .imgbox{aspect-ratio:2/3.1}
-.rc .imgbox img{object-position:top center}
+.rc .imgbox{aspect-ratio:2/3;background:radial-gradient(ellipse at 50% 24%,color-mix(in srgb,var(--c) 32%,#3b0b12) 0%,#18060a 60%,#0b0205 100%)}
+.rc .imgbox img{object-fit:contain;object-position:top center}
 .rc .no{position:absolute;left:8px;top:6px;font-family:var(--serif);font-size:22px;font-weight:900;color:#fff;text-shadow:0 2px 8px #000,0 0 16px var(--c)}
 .rc .meta{padding:9px 12px 12px;border-top:3px solid var(--c);background:linear-gradient(180deg,rgba(0,0,0,.2),rgba(0,0,0,.55))}
 .rc .nm{font-weight:800;letter-spacing:.08em}
